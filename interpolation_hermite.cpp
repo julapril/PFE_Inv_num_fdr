@@ -16,7 +16,7 @@
 #include "interpolation_hermite.h"
 
 /**
- * @fn double evaluation_hermite(double* coeff, double u, Intervalle* inter_u, const size_t ordre)
+ * @fn double evaluation_hermite
  * @brief Fonction permettant d'évaluer le polynôme d'Hermite selon ses coefficients.
  * Puisque les coefficients sont donnés pour un u_tilde entre 0 et 1, on doit ajuster la valeur de u.
  * @param coeff Les coefficients du polynome d'Hermite
@@ -34,7 +34,7 @@ double evaluation_hermite(double* coeff, double u, Intervalle* inter_u, const si
 }
 
 /**
- * @fn double* hermite_lineaire(Intervalle* inter_p)
+ * @fn double* hermite_lineaire
  * @brief Fonction calculant les coefficients du polynome d'Hermite pour l'ordre 1.
  * @param inter_p L'intervalle en p où l'interpolation est effectuée.
  * @return double* Un tableau contenant les coefficients de l'interpolation d'ordre 1.
@@ -49,7 +49,7 @@ double* hermite_lineaire(Intervalle* inter_p){
 }
 
 /**
- * @fn double* hermite_cubique(Intervalle* inter_p, Intervalle* inter_u, double (*densite)(double))
+ * @fn double* hermite_cubique
  * @brief Fonction calculant les coefficients du polynome cubique d'Hermite.
  * @param inter_p L'intervalle en p où l'interpolation est effectuée.
  * @param inter_u L'intervalle en u où l'interpolation est effectuée.
@@ -75,7 +75,6 @@ double* hermite_cubique(Intervalle* inter_p, Intervalle* inter_u, double (*densi
 
 /**
  * @fn double* hermite_quintique
- * (Intervalle* inter_p, Intervalle* inter_u, double (*densite)(double), double (*deriveedensite)(double))
  * @brief Fonction calculant les coefficients du polynome quintique d'Hermite.
  * @param inter_p L'intervalle en p où l'interpolation est effectuée.
  * @param inter_u L'intervalle en u où l'interpolation est effectuée.
@@ -96,15 +95,8 @@ double* hermite_quintique(Intervalle* inter_p, Intervalle* inter_u,
     double df2 = deriveedensite(p2);
     double du = u2 - u1;
     double dp = p2 - p1;
-    //double S = (u2-u1)/(p2-p1);
 
     double* Q = new double[6];
-    /*Q[0] = p1;
-    Q[1] = 1/f1;
-    Q[2] = -df1/2/pow(f1,3);
-    Q[3] = (3*df1/pow(f1,3) - df2/pow(f2,3))/2/dp +(5*S - 3/f1 - 2/f2)*2/dp/dp;
-    Q[4] = p2 - (Q[0]+ Q[1] + Q[2] + Q[3] + Q[5]);//(2*df2/pow(f2,3) - 3*df1/pow(f1,3))/2/dp/dp + (8/f1 + 7/f2 -15*S)/pow(dp,3);
-    Q[5] = (df1/pow(f1,3) - df2/pow(f2,3))/2/pow(dp,3) + (2*S - 1/f1 - 1/f2)*3/pow(dp,4);*/
     Q[0] = p1;
     Q[1] = du/f1;
     Q[2] = -du*du*df1/2/pow(f1,3);
@@ -116,7 +108,6 @@ double* hermite_quintique(Intervalle* inter_p, Intervalle* inter_u,
 
 /**
  * @fn  initialisation_interpolations
-(list<Intervalle*> p, double (*fdr)(double),  double (*densite)(double), double (*deriveedensite)(double), const size_t ordre)
  * @brief Fonction initialisant une liste contenant toute l'information sur l'interpolation.
  * @param p La liste des intervalles en p.
  * @param fdr La fonction de répartition de la variable aléatoire.
@@ -154,7 +145,7 @@ std::list<std::tuple<Intervalle*, Intervalle*, double*>>* initialisation_interpo
             default:
                 throw std::logic_error("L'ordre de l'interpolation d'Hermite doit etre 1,3, ou 5.");
         }
-        //Initialisation du tuple inter_p, inter_u, hermite_coefficient et ajout à la liste intrpolations
+        //Initialisation du tuple inter_p, inter_u, hermite_coefficient et ajout à la liste interpolations
         std::tuple<Intervalle *, Intervalle *, double *> triplet_p_u_interpo = std::make_tuple (inter_p,inter_u, hermite_coeff);
         interpolations->push_back(triplet_p_u_interpo);
     }
