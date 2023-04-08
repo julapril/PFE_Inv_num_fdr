@@ -1,5 +1,4 @@
 #include <iostream>
-#include <cmath>
 #include <chrono>
 #include <random>
 
@@ -7,22 +6,8 @@
 #include "distributions_statistiques.h"
 
 int main() {
-/*
-  //COMPARAISON AVEC LE PACKAGE DE C++
-    auto start1 = std::chrono::steady_clock::now();
 
-    const int nrolls = 1000000;  // number of experiments
-    std::default_random_engine generator;
-    std::normal_distribution<double> distribution(0.0, 1.0);
-    std::vector<double> generations_random(nrolls);
-    for (int i = 0; i < nrolls; ++i) {
-        generations_random[i] = distribution(generator);
-    }
-    auto end1 = std::chrono::steady_clock::now();
-
-    std::chrono::duration<double> secondes_ecoulees1 = end1 - start1;
-    std::cout << "Temps total c++: " << secondes_ecoulees1.count() << "s\n";
-*/
+    //PARTIE 1: Générateur manuel de nombres aléatoires
     char quit = 'r';
     while(quit != 'q'){
 
@@ -59,6 +44,9 @@ int main() {
     std::cout << "5. Loi Gamma(1/2)" << std::endl;
     std::cout << "6. Loi Beta(2,2)" << std::endl;
     std::cout << "7. Loi Beta(0.3,3)" << std::endl;
+    std::cout << "8. Loi de Poisson(1/2) compos" << (char)130 << "e de s" << (char)130 << "v" << (char)130 << "rit" << (char)130 << " Gamma(5,1)" << std::endl;
+    std::cout << "9. Loi de Poisson(10) compos" << (char)130 << "e de s" << (char)130 << "v" << (char)130 << "rit" << (char)130 << " Gamma(5,1)" << std::endl;
+
     std::cout << "Veuillez entrer une distribution statistique pour laquelle vous souhaiter g" << (char) 130 << "n"
               << (char) 130 << "rer des nombres al" << (char) 130 << "atoires:" << std::endl;
     std::cin >> distr;
@@ -109,13 +97,13 @@ int main() {
         std::cout << "Souhaitez-vous que les nombres g" << (char) 130 << "n" << (char) 130 << "r" << (char) 130
                   << "es soient affich" << (char) 130 << "s? (o/n):" << std::endl;
         std::cin >> r1;
-        affichage_generations = (r1 == 'o') ? true : false;
+        affichage_generations = (r1 == 'o');
 
         std::cout << "Souhaitez-vous que les statistiques (temps et nombres d'intervalles) soient affich" << (char) 130
                   << "es? (o/n):"
                   << std::endl;
         std::cin >> r1;
-        affichage = (r1 == 'o') ? true : false;
+        affichage = (r1 == 'o');
     }
 
 
@@ -172,6 +160,20 @@ int main() {
                                                test_monoticite, affichage, affichage_generations, false, false);
             break;
         }
+        case 8: {
+            Intervalle interP1_2CompG5 = Intervalle(1e-2, 50);
+            generation_inversion(nb_generations, fdrP1_2CompG5, densiteP1_2CompG5, deriveedensiteP1_2CompG5,
+                                 interP1_2CompG5, pts_particuliers, ordre, tol, delta, seed,
+                                 test_monoticite, affichage, affichage_generations, false, false);
+            break;
+        }
+        case 9: {
+            Intervalle interP10CompG5 = Intervalle(1e-2, 200);
+            generation_inversion(nb_generations, fdrP10CompG5, densiteP10CompG5, deriveedensiteP10CompG5,
+                                 interP10CompG5, pts_particuliers, ordre, tol, delta, seed,
+                                 test_monoticite, affichage, affichage_generations, false, false);
+            break;
+        }
         default:
             throw std::logic_error("La distribution entree n'est pas valide.");
     }
@@ -181,7 +183,7 @@ int main() {
     }
 
 
-
+    //PARTIE 2: Résultats empiriques
     int distr;
     int nb_generations = 1;
     int seed = 123;
@@ -195,7 +197,8 @@ int main() {
     bool affichage_nbintervalles = true;
 
     std::cout << std::endl << "PARTIE 2: Calcul du nombres d'intervalles utilis" << (char)130 << "es lors de l'interpolation pour chaque ordre,"
-    << std::endl <<"          pour quelques valeurs d'erreur-u et pour toutes les distributions" << std::endl;
+    << std::endl <<"          pour quelques valeurs d'erreur-u et pour toutes les distributions"
+    << std::endl <<"          (Ces valeurs sont consign" << (char)130 << "es dans le tableau 5.1 du rapport)" <<std::endl;
     for(ordre = 1; ordre < 6; ordre = ordre+2) {
         switch(ordre){
             case 1:
@@ -210,7 +213,7 @@ int main() {
         }
         for (tol = 1e-6; tol > 1e-13; tol = tol / 100) {
             std::cout << "(Erreur-u = " << tol << " )" << std::endl;
-            for (distr = 1; distr < 8; distr++) {
+            for (distr = 1; distr < 10; distr++) {
                 std::cout << distr <<": ";
                 switch (distr) {
                     case 1: {
@@ -273,6 +276,20 @@ int main() {
                                              affichage_nbintervalles);
                         break;
                     }
+                    case 8: {
+                        Intervalle interP1_2CompG5 = Intervalle(1e-2, 50);
+                        generation_inversion(nb_generations, fdrP1_2CompG5, densiteP1_2CompG5, deriveedensiteP1_2CompG5,
+                                             interP1_2CompG5, pts_particuliers, ordre, tol, delta, seed,
+                                             test_monoticite, affichage, affichage_generations, false, true);
+                        break;
+                    }
+                    case 9: {
+                        Intervalle interP10CompG5 = Intervalle(1e-2, 200);
+                        generation_inversion(nb_generations, fdrP10CompG5, densiteP10CompG5, deriveedensiteP10CompG5,
+                                             interP10CompG5, pts_particuliers, ordre, tol, delta, seed,
+                                             test_monoticite, affichage, affichage_generations, false, true);
+                        break;
+                    }
                     default:
                         throw std::logic_error("La distribution entree n'est pas valide.");
                 }
@@ -281,7 +298,45 @@ int main() {
     }
 
     char r;
+    std::cout << std::endl << "Quitter (q)" << std::endl;
     std::cin >> r;
+
+    /*
+  //COMPARAISON AVEC LE PACKAGE DE C++ pour la loi normale
+    auto start1 = std::chrono::steady_clock::now();
+
+    const int nrolls = 1000000;  // number of experiments
+    std::default_random_engine generator;
+    std::normal_distribution<double> distribution(0.0, 1.0);
+    std::vector<double> generations_random(nrolls);
+    for (int i = 0; i < nrolls; ++i) {
+        generations_random[i] = distribution(generator);
+    }
+    auto end1 = std::chrono::steady_clock::now();
+
+    std::chrono::duration<double> secondes_ecoulees1 = end1 - start1;
+    std::cout << "Temps total c++: " << secondes_ecoulees1.count() << "s\n";
+*/
+
+/*
+ * //Code pour tester un exemple.
+   {
+        int nb_generations = 30;
+        int seed = 1;
+        int ordre = 3;
+        std::vector<double> pts_particuliers;
+        bool test_monoticite = false;
+        double tol = 1e-8;
+        double delta = 0.05;
+        bool affichage_generations = true;
+        bool affichage = true;
+        Intervalle interP1_2CompG5 = Intervalle(1e-2, 40);
+        generation_inversion(nb_generations, fdrP1_2CompG5, densiteP1_2CompG5, deriveedensiteP1_2CompG5,
+                             interP1_2CompG5, pts_particuliers, ordre, tol, delta, seed,
+                             test_monoticite, affichage, affichage_generations, false, false);
+
+    }
+*/
 
     return 0;
 }

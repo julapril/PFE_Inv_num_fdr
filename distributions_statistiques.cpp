@@ -1,6 +1,14 @@
-//
-// Created by julap on 2023-03-09.
-//
+/**
+* \file distributions_statistiques.cpp
+* \brief Définition de distributions statistiques utilisées pour le générateur de nombres aléatoires.
+* \author Julien April
+* \version 0.1
+* \date mars 2023
+*
+* Dans le cadre du cours MAT-3600 Projet de fin d'études
+* Sous la supervision de Philippe-Adnré Luneau et Jean Deteix
+*
+*/
 #include <cmath>
 
 #include "distributions_statistiques.h"
@@ -257,6 +265,82 @@ double densiteBeta_0p3_3(double x){
 }
 double deriveedensiteBeta_0p3_3(double x){
     double ff = - (0.7 + 0.6*x - 1.3*pow(x,2))*pow(x, -1.7)/beta_0p3_3;
+    return ff;
+}
+
+double lambda_sur_facto(double lambda, int k){
+    double resultat = 1;
+    for(size_t i = 1; i<=k; i++){
+        resultat /= i;
+        resultat *= lambda;
+    }
+    return resultat;
+}
+double fdrP10CompG5(double x){
+    double tol = 1e-14;
+    double lambda = 10;
+    double alpha = 5;
+    double fdr = 0;
+    for(size_t k = (int)(lambda - log(tol)); k != 0; k--){
+        fdr += exp(-lambda)*lambda_sur_facto(lambda,k)*gammad(x,alpha*k);
+    }
+    fdr += exp(-lambda);
+    return fdr;
+}
+double densiteP10CompG5(double x){
+    double tol = 1e-14;
+    double lambda = 10;
+    int alpha = 5;
+    double f = 0;
+    for(size_t k = (int)(lambda - log(tol)); k != 0; k--){
+        f += lambda_sur_facto(lambda,k)* lambda_sur_facto(x, k*alpha-1);
+    }
+    f *= exp(-lambda-x);
+    return f;
+}
+double deriveedensiteP10CompG5(double x){
+    double tol = 1e-14;
+    double lambda = 10;
+    int alpha = 5;
+    double ff = 0;
+    for(size_t k = (int)(lambda - log(tol)); k != 0; k--){
+        ff += lambda_sur_facto(lambda,k)* lambda_sur_facto(x, k*alpha-2)*(1-x/(k*alpha-1));
+    }
+    ff *= exp(-lambda-x);
+    return ff;
+}
+
+double fdrP1_2CompG5(double x){
+    double tol = 1e-14;
+    double lambda = .5;
+    double alpha = 5;
+    double fdr = 0;
+    for(size_t k = (int)(lambda - log(tol)); k != 0; k--){
+        fdr += exp(-lambda)*lambda_sur_facto(lambda,k)*gammad(x,alpha*k);
+    }
+    fdr += exp(-lambda);
+    return fdr;
+}
+double densiteP1_2CompG5(double x){
+    double tol = 1e-14;
+    double lambda = .5;
+    int alpha = 5;
+    double f = 0;
+    for(size_t k = (int)(lambda - log(tol)); k != 0; k--){
+        f += lambda_sur_facto(lambda,k)* lambda_sur_facto(x, k*alpha-1);
+    }
+    f *= exp(-lambda-x);
+    return f;
+}
+double deriveedensiteP1_2CompG5(double x){
+    double tol = 1e-14;
+    double lambda = .5;
+    int alpha = 5;
+    double ff = 0;
+    for(size_t k = (int)(lambda - log(tol)); k != 0; k--){
+        ff += lambda_sur_facto(lambda,k)* lambda_sur_facto(x, k*alpha-2)*(1-x/(k*alpha-1));
+    }
+    ff *= exp(-lambda-x);
     return ff;
 }
 

@@ -18,6 +18,25 @@
 #include "generation_aleatoire.h"
 
 
+/**
+ * generation_inversion
+ * @param nb_generations Nombre de générations.
+ * @param fdr La fonction de répartition.
+ * @param densite La densité.
+ * @param deriveedensite La dérivée de la densité.
+ * @param inter Le support de la variable aléatoire
+ * @param ptsparticuliers Les extremums locaux et discontinuités de la densité et de ses dérivées.
+ * @param ordre L'ordre de l'interpolation d'Hermite
+ * @param tol La tolérence sur l'erreur pour la division_2.
+ * @param delta La tolérance pour la première division.
+ * @param seed Seed utilisée pour la gnération aléatoire uniforme.
+ * @param test_monoticite Valeur booléenne indiquant si on effectue le test de monoticité ou non.
+ * @param affichage
+ * @param affichage_generations
+ * @param affichage_division_0
+ * @param affichage_nbintervalles
+ * @return Un pointeur vers un vecteur contenant les générations
+ */
 std::vector<double>* generation_inversion(const size_t nb_generations, double (*fdr)(double),  double (*densite)(double),
                              double (*deriveedensite)(double), Intervalle inter,std::vector<double>&  ptsparticuliers,
                              const size_t ordre, double tol, double delta, int seed,
@@ -63,7 +82,14 @@ std::vector<double>* generation_inversion(const size_t nb_generations, double (*
 
     /* GÉNÉRATION ALÉATOIRE */
     //Génération de nombres aléatoires et évaluation de H
-    //std::vector<double> generations_recherche = generation_aleatoire_recherche(interpolations, nb_generations, ordre, seed, affichage_generations);
+    /* Génération avec recherche linéaire
+    auto start1 = std::chrono::steady_clock::now();
+    std::vector<double>* generations_recherche = generation_aleatoire_recherche(interpolations, nb_generations, ordre, seed, affichage_generations);
+    auto end1 = std::chrono::steady_clock::now();
+    std::chrono::duration<double> secondes_ecoulees1 = end1-start1;
+    */
+
+    // Génération avec recherche par index
     auto start2 = std::chrono::steady_clock::now();
     std::vector<double>* generations_index = generation_aleatoire_index(interpolations, nb_generations, ordre, seed,
                                                                        affichage_generations);
@@ -71,9 +97,10 @@ std::vector<double>* generation_inversion(const size_t nb_generations, double (*
     std::chrono::duration<double> secondes_ecoulees2 = end2-start2;
 
 
+    // Affichage des données et résultats de l'algorithme de génération-inversion
     if (affichage) {
         std::cout << std::endl << "DONN" << (char)144 << "ES ET R" << (char)144 << "SULTATS" << std::endl;
-        std::cout << "G" << (char)130 << "n" << (char)130 << "ration de nombres al" << (char)130 << "atoires complt" << (char)130 << "t" << (char)130 << "e" << std::endl;
+        std::cout << "G" << (char)130 << "n" << (char)130 << "ration de " << nb_generations << " nombres al" << (char)130 << "atoires complt" << (char)130 << "t" << (char)130 << "e" << std::endl;
         switch(ordre){
             case 1:
                 std::cout << "Interpolation lin" << (char)130 << "aire d'Hermite"<<std::endl;
@@ -92,6 +119,7 @@ std::vector<double>* generation_inversion(const size_t nb_generations, double (*
         std::cout << "Sur l'intervalle " << inter_copie << std::endl;
         std::cout << "Nombres d'intervalles pour l'interpolation = " << interpolations.size()  <<  std::endl;
         std::cout << "Temps interpolation: " << secondes_ecoulees.count() << "s\n";
+        //std::cout << "Temps g" << (char)130 << "n" << (char)130 << "ration al" << (char)130 << "atoire par recherche: " << secondes_ecoulees1.count() << "s\n";
         std::cout << "Temps g" << (char)130 << "n" << (char)130 << "ration al" << (char)130 << "atoire par index: " << secondes_ecoulees2.count() << "s\n";
     }
 

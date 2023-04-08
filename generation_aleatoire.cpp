@@ -106,8 +106,6 @@ std::vector<double>* generation_aleatoire_index(std::list<std::tuple<Intervalle*
         (*generations)[i] = H_u;
         if (affichage1)
             printf("u = %.10f, H(u) = %+.10f \n", u_genere,H_u);
-            //std::cout << "u = " << u_genere << ",  H(u) = " << H_u << std::endl;
-
     }
 
     //Suppression du contenu de l'index
@@ -130,8 +128,6 @@ std::vector<double>* generation_aleatoire_recherche(std::list<std::tuple<Interva
                                                const size_t nb_generations, const size_t ordre, int seed,
                                                bool affichage1){
 
-    auto start2 = std::chrono::steady_clock::now();
-
     std::vector<double>* generations = new std::vector<double>(nb_generations);
     std::default_random_engine generator;
     generator.seed(seed);
@@ -146,12 +142,9 @@ std::vector<double>* generation_aleatoire_recherche(std::list<std::tuple<Interva
         double H_u = evaluation_hermite(std::get<2>(*tIntervalle), u_genere, std::get<1>(*tIntervalle), ordre);
         (*generations)[i] = H_u;
         if (affichage1)
-            std::cout << "u = " << u_genere << ",  H(u) = " << H_u << std::endl;
+            printf("u = %.10f, H(u) = %+.10f \n", u_genere,H_u);
 
     }
-    auto end2 = std::chrono::steady_clock::now();
-    std::chrono::duration<double> secondes_ecoulees2 = end2-start2;
-    std::cout << "Temps generation aleatoire recherche: " << secondes_ecoulees2.count() << "s\n";
 
     return generations;
 }

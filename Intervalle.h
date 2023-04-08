@@ -18,7 +18,7 @@
 /**
  * @class Intervalle
  *
- * @brief Classe représentant un intervalle borné réel
+ * @brief Classe représentant un intervalle fermé borné réel
  */
 class Intervalle {
 public:

@@ -134,7 +134,7 @@ bool est_monotone (std::tuple<Intervalle*, Intervalle*, double*>& tIntervalle,
             case 1:
                 return true;
             case 3: {
-                //Test de conditions suffisantes pour la monoticité de l'interpolation
+                // Test de conditions suffisantes pour la monoticité de l'interpolation
                 // cubique d'Hermite sur l'intervalle spécifié..
                 double p1 = std::get<0>(tIntervalle)->getInf();
                 double p2 = std::get<0>(tIntervalle)->getSup();
@@ -170,6 +170,35 @@ void division_2(std::list<std::tuple<Intervalle*, Intervalle*, double*>>& interp
     for(auto itr = interpolations.begin(); itr != interpolations.end(); itr++)
         if(! respecte_condition_2(*itr,fdr, ordre, tol) || !est_monotone(*itr, densite, ordre, test_monoticite))
             division_2_recursif(interpolations,itr, fdr, densite, deriveedensite, ordre, tol, test_monoticite);
+
+    // Ajout d'un intervalle au début et d'un intervalle à la fin pour courvir les cas où u est très petit ou très grand.
+    // Début
+    auto debut = interpolations.begin();
+     double a = std::get<0>(*debut)->getInf();
+     double F_a = std::get<1>(*debut)->getInf();
+     Intervalle* inter_p_debut = new Intervalle(a,a);
+     Intervalle* inter_u_debut = new Intervalle(0, F_a);
+     double* hermite_coeff_debut;
+     double coeff_debut[6] = {a,0,0,0,0,0};
+     hermite_coeff_debut = coeff_debut;
+     std::tuple<Intervalle*, Intervalle*, double*> tIntervalle = std::make_tuple (inter_p_debut, inter_u_debut, hermite_coeff_debut);
+     // Insertion dans la liste
+     interpolations.insert(debut,tIntervalle);
+
+     // Fin
+     auto fin = interpolations.end();
+     fin--;
+     double b = std::get<0>(*fin)->getSup();
+     double F_b = std::get<1>(*fin)->getSup();
+     Intervalle* inter_p_fin = new Intervalle(b,b);
+     Intervalle* inter_u_fin = new Intervalle(F_b,1);
+     double* hermite_coeff_fin;
+     double coeff_fin[6] = {b,0,0,0,0,0};
+     hermite_coeff_fin = coeff_fin;
+     std::tuple<Intervalle*, Intervalle*, double*> tIntervalle_fin = std::make_tuple (inter_p_fin, inter_u_fin, hermite_coeff_fin);
+     // Insertion dans la liste
+     fin++;
+     interpolations.insert(fin,tIntervalle_fin);
 }
 
 /**

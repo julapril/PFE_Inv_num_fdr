@@ -1,6 +1,14 @@
-//
-// Created by julap on 2023-03-09.
-//
+/**
+* \file distributions_statistiques.cpp
+* \brief Déclaration de distributions statistiques utilisées pour le générateur de nombres aléatoires.
+* \author Julien April
+* \version 0.1
+* \date mars 2023
+*
+* Dans le cadre du cours MAT-3600 Projet de fin d'études
+* Sous la supervision de Philippe-Adnré Luneau et Jean Deteix
+*
+*/
 
 #ifndef PROGRAMMATION_DISTRIBUTIONS_STATISTIQUES_H
 #define PROGRAMMATION_DISTRIBUTIONS_STATISTIQUES_H
@@ -63,7 +71,14 @@ double fdrBeta_0p3_3(double x);
 double densiteBeta_0p3_3(double x);
 double deriveedensiteBeta_0p3_3(double x);
 
-void initialisation_distribution(int distr,
-                                 double (*fdr)(double),  double (*densite)(double), double (*deriveedensite)(double));
+double lambda_sur_facto(double lambda, int k);
+double fdrP10CompG5(double x);
+double densiteP10CompG5(double x);
+double deriveedensiteP10CompG5(double x);
+
+double fdrP1_2CompG5(double x);
+double densiteP1_2CompG5(double x);
+double deriveedensiteP1_2CompG5(double x);
+
 
 #endif //PROGRAMMATION_DISTRIBUTIONS_STATISTIQUES_H
